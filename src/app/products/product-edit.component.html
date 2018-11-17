@@ -1,0 +1,223 @@
+<div class="card">
+  <div class="card-header">
+    {{pageTitle}}
+  </div>
+
+  <div class="card-body">
+    <form novalidate
+          autocomplete="off"
+          (ngSubmit)="saveProduct()"
+          [formGroup]="productForm">
+
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label"
+               for="productNameId">Product Name</label>
+        <div class="col-md-8">
+          <input class="form-control"
+                 id="productNameId"
+                 type="text"
+                 placeholder="Name (required)"
+                 formControlName="productName"
+                 [ngClass]="{'is-invalid': displayMessage.productName }" />
+          <span class="invalid-feedback">
+            {{displayMessage.productName}}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label"
+               for="productCodeId">Product Code</label>
+        <div class="col-md-8">
+          <input class="form-control"
+                 id="productCodeId"
+                 type="text"
+                 placeholder="Code (required)"
+                 formControlName="productCode"
+                 [ngClass]="{'is-invalid': displayMessage.productCode}" />
+          <span class="invalid-feedback">
+            {{displayMessage.productCode}}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label"
+               for="priceId">Price</label>
+        <div class="col-md-8">
+          <input class="form-control"
+                 id="priceId"
+                 type="text"
+                 placeholder="Price of this product (required)"
+                 formControlName="price"
+                 [ngClass]="{'is-invalid': displayMessage.price }" />
+          <span class="invalid-feedback">
+            {{displayMessage.price}}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label"
+               for="starRatingId">Star Rating (1-5)</label>
+
+        <div class="col-md-8">
+          <input class="form-control"
+                 id="starRatingId"
+                 type="text"
+                 placeholder="Rating (1-5)"
+                 formControlName="starRating"
+                 [ngClass]="{'is-invalid': displayMessage.starRating}" />
+          <span class="invalid-feedback">
+            {{displayMessage.starRating}}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label"
+               for="releaseDateId">Date of Release</label>
+        <div class="col-md-8">
+          <input class="form-control"
+                 id="releaseDateId"
+                 type="text"
+                 placeholder="Date of release of the product (optional)"
+                 formControlName="releaseDate"
+                 [ngClass]="{'is-invalid': displayMessage.releaseDate }" />
+          <span class="invalid-feedback">
+            {{displayMessage.releaseDate}}
+          </span>
+        </div>
+      </div>
+
+      <div formArrayName="tags">
+        <div class="row">
+          <div class="col-md-1">
+            <button class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="addTag()">Add Tag
+            </button>
+          </div>
+        </div>
+        <div class="form-group row"
+             *ngFor="let tag of tags.controls; let i=index">
+          <label class="col-md-2 col-form-label"
+                 [attr.for]="i">Tag</label>
+
+          <div class="col-md-8">
+            <input class="form-control"
+                   [id]="i"
+                   type="text"
+                   placeholder="Tag"
+                   [formControlName]="i" />
+          </div>
+          <button class="col-md-1 btn btn-outline-warning"
+                  type="button"
+                  (click)="deleteTag(i)">Delete Tag
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label"
+               for="descriptionId">Description</label>
+
+        <div class="col-md-8">
+          <textarea class="form-control"
+                    id="descriptionId"
+                    placeholder="Description"
+                    rows=3
+                    formControlName="description"
+                    [ngClass]="{'is-invalid': displayMessage.description}"></textarea>
+          <span class="invalid-feedback">
+            {{ displayMessage.description}}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group row"
+           *ngIf='product?.imageUrl'>
+        <label class="col-md-2 col-form-label">Current Image</label>
+
+        <div class="col-md-6">
+          <img [src]='product.imageUrl'
+               [title]='product.productName'
+               [style.width.px]='imageWidth'
+               [style.margin.px]='imageMargin'>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-primary"
+                  style="width: 130px"
+                  type="button"
+                  (click)="changePicture()">Change Picture</button>
+        </div>
+      </div>
+
+      <div class="form-group row"
+           *ngIf='product?.imageUrl && wantToChangePic'>
+        <label class="col-md-2 col-form-label"
+               for="imageUrlId">New Url</label>
+        <div class="col-md-8">
+          <input class="form-control"
+                 id="imageUrlId"
+                 type="text"
+                 placeholder="{{product.imageUrl}}"
+                 formControlName="imageUrl"
+                 [ngClass]="{'is-invalid': displayMessage.imageUrl}" />
+          <span class="invalid-feedback">
+            {{displayMessage.imageUrl}}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group row"
+           *ngIf='product?.id===0'>
+        <label class="col-md-2 col-form-label"
+               for="imageUrlId">Url</label>
+        <div class="col-md-8">
+          <input class="form-control"
+                 id="imageUrlId"
+                 type="text"
+                 placeholder="Enter the URL of the product (required)"
+                 formControlName="imageUrl"
+                 [ngClass]="{'is-invalid': displayMessage.imageUrl}" />
+          <span class="invalid-feedback">
+            {{displayMessage.imageUrl}}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-1">
+          <button class="btn btn-primary"
+                  style='width:80px'
+                  type="submit"
+                  [disabled]="!productForm.valid || !productForm.dirty"
+                  (click)="saveProduct()">
+            Save
+          </button>
+        </div>
+        <div class="col-md-1">
+          <button class="btn btn-outline-secondary"
+                  style='width:80px'
+                  type="button"
+                  [routerLink]="['/products']">
+            Cancel
+          </button>
+        </div>
+        <div class="col-md-1">
+          <button class="btn btn-outline-warning"
+                  style='width:80px'
+                  type="button"
+                  (click)="deleteProduct()">
+            Delete
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class='alert alert-danger'
+       *ngIf='errorMessage'>{{errorMessage}}
+  </div>
+</div>

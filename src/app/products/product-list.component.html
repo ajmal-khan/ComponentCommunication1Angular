@@ -1,0 +1,70 @@
+<div class='card card-primary'>
+  <div class='card-header'>
+    {{pageTitle}}
+  </div>
+  <div class='card-body'>
+      <!--Filter by the title of the product-->
+      <div class='row'>
+        <pm-criteria #filterCriteria class='col-md-10' 
+          [displayDetail]='includeDetail'
+          [hitCount]='filteredProducts?.length'
+          (valueChange)='onValueChange($event)'>
+        </pm-criteria>
+      </div>
+    
+    <div class='table-responsive'>
+      <table class='table'
+             *ngIf='products?.length'>
+        <thead>
+          <tr>
+            <th>
+              <button class='btn btn-primary'
+                      (click)='toggleImage()'>
+                {{showImage ? 'Hide' : 'Show'}} Image
+              </button>
+            </th>
+            <th>Product</th>
+            <th>Code</th>
+            <th>Available</th>
+            <th>Price</th>
+            <th>5 Star Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let product of filteredProducts'>
+            <td>
+              <img *ngIf='showImage && product.imageUrl'
+                   [src]='product.imageUrl'
+                   [title]='product.productName'
+                   [style.width.px]='imageWidth'
+                   [style.margin.px]='imageMargin'>
+            </td>
+            <td>
+              <a [routerLink]="['/products', product.id]">
+                {{ product.productName }}
+              </a>
+            </td>
+            <td>{{ product.productCode | lowercase }}</td>
+            <td>{{ product.releaseDate }}</td>
+            <td>{{ product.price | currency:'USD':'symbol':'1.2-2' }}</td>
+            <td>
+              <pm-star [rating]='product.starRating'
+                       (ratingClicked)='onRatingClicked($event)'>
+              </pm-star>
+            </td>
+            <td>
+              <a class="btn btn-primary"
+                 [routerLink]="['/products', product.id, 'edit']">
+                Edit
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div *ngIf='errorMessage'
+     class='alert alert-danger'>
+  Error: {{ errorMessage }}
+</div>
